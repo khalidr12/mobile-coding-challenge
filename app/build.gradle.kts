@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.audiobooks.codingchallenge"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.audiobooks.codingchallenge"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -75,6 +75,7 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
     implementation ("io.coil-kt:coil-compose:1.4.0")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
 
 
 }

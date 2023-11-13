@@ -6,17 +6,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.audiobooks.codingchallenge.api.response.Podcast
 import com.audiobooks.codingchallenge.model.BestPodcastsViewState
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
 @Composable
 fun BestPodcastsView(
-    viewModel: GetBestPodcastsViewModel
+    viewModel: GetBestPodcastsViewModel,
+    navController: NavController
 ) {
     when (val viewState = viewModel.viewState.value) {
         is BestPodcastsViewState.Loading -> {
@@ -28,13 +29,13 @@ fun BestPodcastsView(
         }
 
         is BestPodcastsViewState.Success -> {
-            BestPodcastsListView(viewState.podcasts)
+            BestPodcastsListView(viewState.podcasts, navController = navController)
         }
     }
 }
 
 @Composable
-fun BestPodcastsListView(podcasts: List<Podcast>){
+fun BestPodcastsListView(podcasts: List<Podcast>, navController: NavController){
     Column (
         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
     ) {
@@ -45,7 +46,7 @@ fun BestPodcastsListView(podcasts: List<Podcast>){
         )
         LazyColumn {
             items(podcasts.size){
-                PodcastItem(podcast = podcasts[it])
+                BestPodcastItemView(podcast = podcasts[it], navController = navController)
             }
         }
     }

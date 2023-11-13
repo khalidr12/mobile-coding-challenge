@@ -2,15 +2,16 @@ package com.audiobooks.codingchallenge.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.audiobooks.codingchallenge.api.response.Podcast
+import com.audiobooks.codingchallenge.model.BestPodcastModel
 import com.audiobooks.codingchallenge.model.BestPodcastsViewState
 import com.audiobooks.codingchallenge.usecase.Result
 import com.audiobooks.codingchallenge.usecase.getBestPodcastsUseCase.GetBestPodcastsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.nio.file.Files.find
 import javax.inject.Inject
 
 
@@ -25,7 +26,7 @@ class GetBestPodcastsViewModel @Inject constructor(
         getBestPodcasts()
     }
 
-    fun getBestPodcasts(){
+    private fun getBestPodcasts(){
         viewModelScope.launch {
             getBestPodcastsUseCase().collect { result ->
                 when(result){
@@ -43,6 +44,14 @@ class GetBestPodcastsViewModel @Inject constructor(
                 }
 
             }
+        }
+    }
+
+    fun getPodcastById(podcastId: String): Podcast? {
+        return if(viewState.value is BestPodcastsViewState.Success){
+              (viewState.value as BestPodcastsViewState.Success).podcasts.find { it.id == podcastId }
+        } else {
+            null
         }
     }
 }

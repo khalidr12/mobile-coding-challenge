@@ -7,10 +7,16 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.audiobooks.codingchallenge.ui.theme.MyApplicationTheme
 import com.audiobooks.codingchallenge.view.BestPodcastsView
+import com.audiobooks.codingchallenge.view.PodcastView
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
+import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel_Factory
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,10 +31,28 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    BestPodcastsView(viewModel)
+                    AudioBooks(viewModel)
                 }
             }
         }
     }
 }
 
+@Composable
+fun AudioBooks(viewModel: GetBestPodcastsViewModel) {
+    val navController = rememberNavController()
+
+    // NavHost with different composable screens
+    NavHost(navController = navController, startDestination = "bestPodcasts") {
+        composable("bestPodcasts") {
+            BestPodcastsView(viewModel, navController)
+        }
+        composable("podcastDetails/{podcastId}") { backStackEntry ->
+            val podcastId = backStackEntry.arguments?.getString("podcastId") ?: ""
+            val podcast = viewModel.getPodcastById(podcastId)
+            if(podcast != null){
+                PodcastView(navController = navController, podcast = podcast)
+            }
+        }
+    }
+}
