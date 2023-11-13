@@ -74,6 +74,8 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
+    implementation ("io.coil-kt:coil-compose:1.4.0")
+
 
 }
 
