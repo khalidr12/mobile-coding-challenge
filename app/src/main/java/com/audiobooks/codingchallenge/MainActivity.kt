@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.audiobooks.codingchallenge.ui.theme.MyApplicationTheme
+import com.audiobooks.codingchallenge.view.BestPodcastsView
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

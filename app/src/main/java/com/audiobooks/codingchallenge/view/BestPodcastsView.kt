@@ -1,8 +1,10 @@
-package com.audiobooks.codingchallenge
+package com.audiobooks.codingchallenge.view
 
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.audiobooks.codingchallenge.api.response.Podcast
 import com.audiobooks.codingchallenge.model.BestPodcastsViewState
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
@@ -10,21 +12,30 @@ import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 fun BestPodcastsView(
     viewModel: GetBestPodcastsViewModel
 ) {
-    val data = when (val viewState = viewModel.viewState.value) {
+    when (val viewState = viewModel.viewState.value) {
         is BestPodcastsViewState.Loading -> {
-           "Loading"
+            ShowText(sampleText = "Loading")
         }
 
         is BestPodcastsViewState.Error -> {
-            viewState.errorMessage
+            ShowText(sampleText = viewState.errorMessage)
         }
 
         is BestPodcastsViewState.Success -> {
-           viewState.podcasts.toString()
+            BestPodcastsListView(viewState.podcasts)
         }
     }
-    ShowText(sampleText = data)
 }
+
+@Composable
+fun BestPodcastsListView(podcasts: List<Podcast>){
+    LazyColumn {
+        items(podcasts.size){
+            PodcastItem(podcast = podcasts[it])
+        }
+    }
+}
+
 
 @Composable
 fun ShowText(sampleText : String){
