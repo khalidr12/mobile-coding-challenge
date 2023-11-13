@@ -1,5 +1,6 @@
 package com.audiobooks.codingchallenge.view
 
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.audiobooks.codingchallenge.api.response.Podcast
 
@@ -34,7 +37,12 @@ fun PodcastItem(podcast: Podcast){
         Column {
             Text(
                 text = podcast.title,
-                modifier = Modifier
+            )
+
+            Text(
+                text = podcast.publisher,
+                fontStyle = FontStyle.Italic,
+                fontSize = 15.sp
             )
         }
     }
