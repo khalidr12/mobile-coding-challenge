@@ -1,9 +1,15 @@
 package com.audiobooks.codingchallenge.view
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.audiobooks.codingchallenge.api.response.Podcast
 import com.audiobooks.codingchallenge.model.BestPodcastsViewState
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
@@ -29,9 +35,18 @@ fun BestPodcastsView(
 
 @Composable
 fun BestPodcastsListView(podcasts: List<Podcast>){
-    LazyColumn {
-        items(podcasts.size){
-            PodcastItem(podcast = podcasts[it])
+    Column (
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+    ) {
+        Text(
+            text = "Podcasts",
+            fontWeight = Bold,
+            fontSize = 22.sp
+        )
+        LazyColumn {
+            items(podcasts.size){
+                PodcastItem(podcast = podcasts[it])
+            }
         }
     }
 }
