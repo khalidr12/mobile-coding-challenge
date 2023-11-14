@@ -20,10 +20,11 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.audiobooks.codingchallenge.R
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
+import com.audiobooks.codingchallenge.viewmodel.PodcastViewModel
 
 @Composable
 fun PodcastView(
-    viewModel: GetBestPodcastsViewModel
+    viewModel: PodcastViewModel
 ){
     Column(
         modifier = Modifier.padding(10.dp)
@@ -60,7 +61,7 @@ fun PodcastView(
             Button(
                 onClick = { viewModel.toggleFavorite(podcastId = podcast.id) }
             ){
-                Text(text = podcast.isFavourite.toString())
+                Text(text = viewModel.toggleFavorite.value.toString())
             }
         }
     }

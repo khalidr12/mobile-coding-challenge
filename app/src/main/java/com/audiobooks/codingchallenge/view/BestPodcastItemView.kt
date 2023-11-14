@@ -50,6 +50,8 @@ fun BestPodcastItemView(
                 fontStyle = FontStyle.Italic,
                 fontSize = 15.sp
             )
+
+            Text(text = podcast.isFavourite.toString())
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface BestPodcastsDAO {
@@ -13,6 +14,12 @@ interface BestPodcastsDAO {
     @Query("SELECT * FROM podcasts WHERE id = :podcastId")
     suspend fun getPodcastById(podcastId: String): Podcast?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPodcasts(podcasts: List<Podcast>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(podcast: Podcast)
+
+    @Update
+    suspend fun update(podcast: Podcast)
 }

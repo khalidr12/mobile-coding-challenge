@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.audiobooks.codingchallenge.api.repository.GetBestPodcastsRepository
-import com.audiobooks.codingchallenge.database.Podcast
 import com.audiobooks.codingchallenge.model.BestPodcastsViewState
 import com.audiobooks.codingchallenge.navigation.NavigationEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,22 +20,16 @@ class GetBestPodcastsViewModel @Inject constructor(
     private val _viewState = mutableStateOf<BestPodcastsViewState>(BestPodcastsViewState.Loading)
     val viewState: State<BestPodcastsViewState> get() = _viewState
 
-    private val _isFavourite = mutableStateOf(false)
-    val isFavourite: State<Boolean> get() = _isFavourite
-
-    private val _podcast = mutableStateOf<Podcast?>(null)
-    val podcast: State<Podcast?> get() = _podcast
-
     private val _navigationEvent = mutableStateOf<NavigationEvent?>(null)
     val navigationEvent: State<NavigationEvent?> get() = _navigationEvent
 
     init {
-        getBestPodcasts()
+        loadPodcasts()
     }
 
-    private fun getBestPodcasts(){
+    fun loadPodcasts(){
         viewModelScope.launch {
-            getBestPodcastsRepository.refreshPodcasts()
+            getBestPodcastsRepository.initializeData()
             val podcasts = getBestPodcastsRepository.getAllPodcasts()
             _viewState.value = BestPodcastsViewState.Success(
                 podcasts = podcasts
@@ -45,38 +38,7 @@ class GetBestPodcastsViewModel @Inject constructor(
     }
 
     fun podcastSelected(podcastId: String){
-        getPodcastById(podcastId = podcastId)
         _navigationEvent.value = NavigationEvent.NavigateToPodcastView(podcastId = podcastId)
-    }
-    fun navigateBack(){
-        _navigationEvent.value = NavigationEvent.NavigateBack
-    }
-    fun toggleFavorite(podcastId: String) {
-        if(_viewState.value is BestPodcastsViewState.Success){
-            val updatedPodcasts = (_viewState.value as BestPodcastsViewState.Success).podcasts.map {
-                if (it.id == podcastId) {
-                    _isFavourite.value = !it.isFavourite
-                    it.copy(isFavourite = !it.isFavourite)
-                } else {
-                    it
-                }
-            }
-            _viewState.value = BestPodcastsViewState.Success(updatedPodcasts)
-            // Update the Room database
-            viewModelScope.launch {
-                getBestPodcastsRepository.updatePodcast(
-                    podcastId,
-                    (_viewState.value as BestPodcastsViewState.Success)
-                        .podcasts.find { it.id == podcastId }?.isFavourite ?: false
-                )
-            }
-        }
-
-    }
-    private fun getPodcastById(podcastId: String) {
-        viewModelScope.launch {
-            _podcast.value = getBestPodcastsRepository.getPodcastById(podcastId)
-        }
     }
 
     fun clearNavigationEvent() {

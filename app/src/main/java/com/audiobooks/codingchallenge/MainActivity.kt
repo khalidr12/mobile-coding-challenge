@@ -1,6 +1,7 @@
 package com.audiobooks.codingchallenge
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -17,11 +18,13 @@ import com.audiobooks.codingchallenge.ui.theme.MyApplicationTheme
 import com.audiobooks.codingchallenge.view.BestPodcastsView
 import com.audiobooks.codingchallenge.view.PodcastView
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
+import com.audiobooks.codingchallenge.viewmodel.PodcastViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: GetBestPodcastsViewModel by viewModels()
+    private val getBestPodcastViewModel: GetBestPodcastsViewModel by viewModels()
+    private val podcastViewModel: PodcastViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -31,40 +34,53 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AudioBooks(viewModel)
+                    AudioBooks()
                 }
             }
         }
     }
-}
 
-@Composable
-fun AudioBooks(viewModel: GetBestPodcastsViewModel) {
-    val navController = rememberNavController()
+    @Composable
+    fun AudioBooks() {
+        val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "bestPodcasts") {
-        composable("bestPodcasts") {
-            BestPodcastsView(viewModel)
-        }
-        composable("podcastDetails/{podcastId}") {
-            PodcastView(viewModel)
-        }
-    }
-
-    val navigationEvent = viewModel.navigationEvent.value
-    if (navigationEvent != null) {
-        when (navigationEvent) {
-            is NavigationEvent.NavigateToPodcastView -> {
-                navController.navigate("podcastDetails/${navigationEvent.podcastId}")
+        NavHost(navController = navController, startDestination = "bestPodcasts") {
+            composable("bestPodcasts") {
+                BestPodcastsView(getBestPodcastViewModel)
             }
-            is NavigationEvent.NavigateToPodcastList -> {
-                navController.navigate("bestPodcasts")
+            composable("podcastDetails/{podcastId}") {
+                it.arguments?.getString("podcastId")
+                    ?.let { it1 -> podcastViewModel.loadPodcast(it1) }
+                PodcastView(podcastViewModel)
             }
+        }
+
+        val navigationEvent = getBestPodcastViewModel.navigationEvent.value
+        if (navigationEvent != null) {
+            when (navigationEvent) {
+                is NavigationEvent.NavigateToPodcastView -> {
+                    navController.navigate("podcastDetails/${navigationEvent.podcastId}")
+                }
+                is NavigationEvent.NavigateToPodcastList -> {
+                    navController.navigate("bestPodcasts")
+                }
+                is NavigationEvent.NavigateBack -> {
+                    navController.popBackStack()
+                }
+            }
+            getBestPodcastViewModel.clearNavigationEvent()
+        }
+
+        when (podcastViewModel.navigationEvent.value) {
             is NavigationEvent.NavigateBack -> {
+                getBestPodcastViewModel.loadPodcasts()
                 navController.popBackStack()
             }
-        }
-        viewModel.clearNavigationEvent()
-    }
 
+            else -> {
+                Log.ERROR
+            }
+        }
+        podcastViewModel.clearNavigationEvent()
+    }
 }

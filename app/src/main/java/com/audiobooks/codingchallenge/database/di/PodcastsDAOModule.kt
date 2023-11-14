@@ -22,7 +22,7 @@ object DatabaseModule {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            "adudio_books"
+            "audio_books"
         ).build()
     }
 

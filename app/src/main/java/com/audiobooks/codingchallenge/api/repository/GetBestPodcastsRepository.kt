@@ -14,6 +14,27 @@ class GetBestPodcastsRepository @Inject constructor(
     private val podcastsDAO: BestPodcastsDAO
 ) : IGetBestPodcastsRepository {
 
+    suspend fun initializeData() {
+        val podcastsFromDB = podcastsDAO.getAllPodcasts()
+        if (podcastsFromDB.isEmpty()) {
+            val podcastsFromApi = audioBookService.getBestPodcasts().body()?.podcasts ?: emptyList()
+            podcastsDAO.insertPodcasts(podcastsFromApi)
+        } else {
+            val latestPodcastsFromApi = audioBookService.getBestPodcasts().body()?.podcasts ?: emptyList()
+
+            for (apiPodcast in latestPodcastsFromApi) {
+                val existingPodcast = podcastsFromDB.find { it.id == apiPodcast.id }
+
+                if (existingPodcast != null) {
+                    if (!existingPodcast.isFavourite) {
+                        podcastsDAO.update(apiPodcast)
+                    }
+                } else {
+                    podcastsDAO.insert(apiPodcast)
+                }
+            }
+        }
+    }
     suspend fun getAllPodcasts() : List<Podcast> {
         return podcastsDAO.getAllPodcasts()
     }
@@ -26,21 +47,12 @@ class GetBestPodcastsRepository @Inject constructor(
         return podcastsDAO.insertPodcasts(podcasts = podcasts)
     }
 
-    suspend fun updatePodcast(podcastId: String, isFavourited: Boolean) {
+    suspend fun updatePodcast(podcastId: String): Podcast? {
         val podcast = getPodcastById(podcastId)
-        podcast?.let {
-            insertPodcasts(listOf(it.copy(isFavourite = isFavourited)))
+        if (podcast != null) {
+            podcastsDAO.update(podcast.copy(isFavourite = !podcast.isFavourite))
         }
-    }
-
-    suspend fun refreshPodcasts() {
-        val response = audioBookService.getBestPodcasts()
-        if (response.isSuccessful) {
-            val podcasts = response.body()?.podcasts ?: emptyList()
-            insertPodcasts(podcasts)
-        } else {
-            // Handle API error
-        }
+        return podcast
     }
 
     override suspend fun getBestPodcasts(): Response<BestPodcastsResponse> {
