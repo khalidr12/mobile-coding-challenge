@@ -17,19 +17,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.audiobooks.codingchallenge.api.response.Podcast
+import com.audiobooks.codingchallenge.database.Podcast
+import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
 @Composable
 fun BestPodcastItemView(
     podcast: Podcast,
-    navController: NavController
+    viewModel: GetBestPodcastsViewModel
 ){
     Row(
         modifier = Modifier.padding(vertical = 10.dp).clickable {
-            val id = podcast.id
-            navController.navigate("podcastDetails/$id")
+            viewModel.podcastSelected(podcastId = podcast.id)
         }
     ) {
         val painter: Painter = rememberImagePainter(podcast.image)

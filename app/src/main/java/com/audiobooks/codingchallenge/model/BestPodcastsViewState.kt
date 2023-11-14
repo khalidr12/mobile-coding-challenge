@@ -1,6 +1,6 @@
 package com.audiobooks.codingchallenge.model
 
-import com.audiobooks.codingchallenge.api.response.Podcast
+import com.audiobooks.codingchallenge.database.Podcast
 
 sealed class BestPodcastsViewState {
     object Loading : BestPodcastsViewState()

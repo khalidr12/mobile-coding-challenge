@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,15 +17,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.audiobooks.codingchallenge.R
-import com.audiobooks.codingchallenge.api.response.Podcast
+import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
 @Composable
 fun PodcastView(
-    podcast: Podcast,
-    navController: NavController
+    viewModel: GetBestPodcastsViewModel
 ){
     Column(
         modifier = Modifier.padding(10.dp)
@@ -41,21 +40,28 @@ fun PodcastView(
                 modifier = Modifier
                     .size(15.dp, 15.dp)
                     .clickable {
-                        navController.popBackStack()
-                   },
+                        viewModel.navigateBack()
+                    },
             )
             Text(text = "Back", modifier = Modifier.padding(start = 8.dp))
         }
-        Text(text = podcast.title)
-        Text(text = podcast.publisher)
-        val painter: Painter = rememberImagePainter(podcast.image)
-        Image(
-            painter = painter,
-            contentDescription = null, // Add content description if needed
-            modifier = Modifier
-                .size(100.dp, 100.dp) // Adjust size as needed
-                .clip(RoundedCornerShape(10.dp))
-        )
-        Text(text = podcast.description)
+        viewModel.podcast.value?.let { podcast ->
+            Text(text = podcast.title)
+            Text(text = podcast.publisher)
+            val painter: Painter = rememberImagePainter(podcast.image)
+            Image(
+                painter = painter,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(100.dp, 100.dp)
+                    .clip(RoundedCornerShape(10.dp))
+            )
+            Text(text = podcast.description)
+            Button(
+                onClick = { viewModel.toggleFavorite(podcastId = podcast.id) }
+            ){
+                Text(text = podcast.isFavourite.toString())
+            }
+        }
     }
 }

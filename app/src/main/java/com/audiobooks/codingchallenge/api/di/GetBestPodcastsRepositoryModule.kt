@@ -3,6 +3,7 @@ package com.audiobooks.codingchallenge.api.di
 import com.audiobooks.codingchallenge.api.repository.GetBestPodcastsRepository
 import com.audiobooks.codingchallenge.api.repository.IGetBestPodcastsRepository
 import com.audiobooks.codingchallenge.api.service.AudioBookService
+import com.audiobooks.codingchallenge.database.BestPodcastsDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,8 +17,9 @@ class GetBestPodcastsRepositoryModule {
     @Provides
     @Singleton
     fun providesGetBestPodcastsRepositoryModule(
-        service: AudioBookService
+        service: AudioBookService,
+        podcastsDAO: BestPodcastsDAO
     ): IGetBestPodcastsRepository {
-        return GetBestPodcastsRepository(service)
+        return GetBestPodcastsRepository(service, podcastsDAO)
     }
 }

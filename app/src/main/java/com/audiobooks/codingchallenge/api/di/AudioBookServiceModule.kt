@@ -20,6 +20,5 @@ object AudioBookServiceModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AudioBookService::class.java)
-
     }
 }

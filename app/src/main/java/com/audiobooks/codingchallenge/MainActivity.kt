@@ -12,11 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.audiobooks.codingchallenge.navigation.NavigationEvent
 import com.audiobooks.codingchallenge.ui.theme.MyApplicationTheme
 import com.audiobooks.codingchallenge.view.BestPodcastsView
 import com.audiobooks.codingchallenge.view.PodcastView
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
-import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel_Factory
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,17 +42,29 @@ class MainActivity : ComponentActivity() {
 fun AudioBooks(viewModel: GetBestPodcastsViewModel) {
     val navController = rememberNavController()
 
-    // NavHost with different composable screens
     NavHost(navController = navController, startDestination = "bestPodcasts") {
         composable("bestPodcasts") {
-            BestPodcastsView(viewModel, navController)
+            BestPodcastsView(viewModel)
         }
-        composable("podcastDetails/{podcastId}") { backStackEntry ->
-            val podcastId = backStackEntry.arguments?.getString("podcastId") ?: ""
-            val podcast = viewModel.getPodcastById(podcastId)
-            if(podcast != null){
-                PodcastView(navController = navController, podcast = podcast)
-            }
+        composable("podcastDetails/{podcastId}") {
+            PodcastView(viewModel)
         }
     }
+
+    val navigationEvent = viewModel.navigationEvent.value
+    if (navigationEvent != null) {
+        when (navigationEvent) {
+            is NavigationEvent.NavigateToPodcastView -> {
+                navController.navigate("podcastDetails/${navigationEvent.podcastId}")
+            }
+            is NavigationEvent.NavigateToPodcastList -> {
+                navController.navigate("bestPodcasts")
+            }
+            is NavigationEvent.NavigateBack -> {
+                navController.popBackStack()
+            }
+        }
+        viewModel.clearNavigationEvent()
+    }
+
 }
