@@ -7,5 +7,7 @@ import retrofit2.http.Query
 
 interface AudioBookService {
     @GET("best_podcasts")
-    suspend fun getBestPodcasts() : Response<BestPodcastsResponse>
+    suspend fun getBestPodcasts(
+        @Query("page") page: String
+    ) : Response<BestPodcastsResponse>
 }

@@ -1,8 +1,6 @@
 package com.audiobooks.codingchallenge.api.repository
 
-import com.audiobooks.codingchallenge.api.response.BestPodcastsResponse
-import retrofit2.Response
-
+import com.audiobooks.codingchallenge.database.Podcast
 interface IGetBestPodcastsRepository {
-    suspend fun getBestPodcasts() : Response<BestPodcastsResponse>
+    suspend fun getBestPodcasts() : List<Podcast>
 }

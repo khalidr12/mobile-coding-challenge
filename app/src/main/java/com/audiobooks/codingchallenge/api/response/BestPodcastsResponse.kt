@@ -4,15 +4,6 @@ import com.audiobooks.codingchallenge.database.Podcast
 
 data class BestPodcastsResponse(
     val podcasts: List<Podcast>,
+    val has_next: Boolean
 )
-
-//data class Podcast(
-//    val id: String,
-//    val image: String,
-//    val title: String,
-//    val publisher: String,
-//    val thumbnail: String,
-//    val description: String,
-//    val isFavourite: Boolean = false
-//)
 

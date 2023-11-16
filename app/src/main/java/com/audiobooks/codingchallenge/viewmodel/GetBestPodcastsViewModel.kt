@@ -23,13 +23,19 @@ class GetBestPodcastsViewModel @Inject constructor(
     private val _navigationEvent = mutableStateOf<NavigationEvent?>(null)
     val navigationEvent: State<NavigationEvent?> get() = _navigationEvent
 
+    val isLastBatch: Boolean = false
     init {
-        loadPodcasts()
+        initPodcasts()
     }
 
+    private fun initPodcasts(){
+        viewModelScope.launch{
+            getBestPodcastsRepository.initializeData() // Gets all data from api and stores to db
+            loadNextBatch()
+        }
+    }
     fun loadPodcasts(){
         viewModelScope.launch {
-            getBestPodcastsRepository.initializeData()
             val podcasts = getBestPodcastsRepository.getAllPodcasts()
             _viewState.value = BestPodcastsViewState.Success(
                 podcasts = podcasts
@@ -37,6 +43,19 @@ class GetBestPodcastsViewModel @Inject constructor(
         }
     }
 
+    fun loadNextBatch() {
+        if(!isLastBatch){
+            viewModelScope.launch {
+                getBestPodcastsRepository.loadBatch() // gets the next batch of podcasts
+                _viewState.value = BestPodcastsViewState.Success(
+                    podcasts = getBestPodcastsRepository.getAllPodcasts() // load all available podcasts
+                )
+                if(viewState.value is BestPodcastsViewState.Success){
+                    println("PODCASTS: " + (viewState.value as BestPodcastsViewState.Success).podcasts.size)
+                }
+            }
+        }
+    }
     fun podcastSelected(podcastId: String){
         _navigationEvent.value = NavigationEvent.NavigateToPodcastView(podcastId = podcastId)
     }

@@ -8,8 +8,8 @@ import androidx.room.Update
 
 @Dao
 interface BestPodcastsDAO {
-    @Query("SELECT * FROM podcasts")
-    suspend fun getAllPodcasts(): List<Podcast>
+    @Query("SELECT * FROM podcasts LIMIT :limit")
+    suspend fun getAllPodcasts(limit: Int): List<Podcast>
 
     @Query("SELECT * FROM podcasts WHERE id = :podcastId")
     suspend fun getPodcastById(podcastId: String): Podcast?
@@ -20,6 +20,8 @@ interface BestPodcastsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(podcast: Podcast)
 
+    @Query("SELECT * FROM podcasts LIMIT :limit OFFSET :offset")
+    suspend fun getPaginatedPodcasts(limit: Int, offset: Int): List<Podcast>
     @Update
     suspend fun update(podcast: Podcast)
 }
