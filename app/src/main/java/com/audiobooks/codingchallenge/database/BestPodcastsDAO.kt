@@ -17,7 +17,7 @@ interface BestPodcastsDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPodcasts(podcasts: List<Podcast>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(podcast: Podcast)
 
     @Query("SELECT * FROM podcasts LIMIT :limit OFFSET :offset")
