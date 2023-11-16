@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.audiobooks.codingchallenge.database.Podcast
+import com.audiobooks.codingchallenge.ui.theme.FavouriteRed
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
 @Composable
@@ -27,7 +29,10 @@ fun BestPodcastItemView(
     viewModel: GetBestPodcastsViewModel
 ){
     Row(
-        modifier = Modifier.padding(vertical = 10.dp).clickable {
+        modifier = Modifier
+            .padding(vertical = 10.dp)
+            .fillMaxWidth()
+            .clickable {
             viewModel.podcastSelected(podcastId = podcast.id)
         }
     ) {
@@ -51,7 +56,16 @@ fun BestPodcastItemView(
                 fontSize = 15.sp
             )
 
-            Text(text = podcast.isFavourite.toString())
+            FavouriteText(podcast.isFavourite)
         }
     }
+}
+
+@Composable
+fun FavouriteText(isFavourite: Boolean){
+    val text = if (isFavourite) "Favourited" else ""
+    Text(
+        text = text,
+        color = FavouriteRed
+    )
 }

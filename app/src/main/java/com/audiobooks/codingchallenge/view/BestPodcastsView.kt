@@ -21,24 +21,6 @@ import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 fun BestPodcastsView(
     viewModel: GetBestPodcastsViewModel,
 ) {
-    when (val viewState = viewModel.viewState.value) {
-        is BestPodcastsViewState.Loading -> {
-            ShowText(sampleText = "Loading")
-        }
-
-        is BestPodcastsViewState.Error -> {
-            ShowText(sampleText = viewState.errorMessage)
-        }
-
-        is BestPodcastsViewState.Success -> {
-            BestPodcastsListView(viewState.podcasts, viewModel)
-        }
-    }
-}
-
-@Composable
-fun BestPodcastsListView(podcasts: List<Podcast>, viewModel: GetBestPodcastsViewModel){
-    val lazyListState = rememberLazyListState()
     Column (
         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
     ) {
@@ -47,17 +29,36 @@ fun BestPodcastsListView(podcasts: List<Podcast>, viewModel: GetBestPodcastsView
             fontWeight = Bold,
             fontSize = 22.sp
         )
-        LazyColumn(state = lazyListState) {
-            itemsIndexed(podcasts){ index, _ ->
-                BestPodcastItemView(podcast = podcasts[index], viewModel)
 
-                if (index == podcasts.size - 1) {
-                    val lastVisibleItemIndex = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                    val totalItems = remember { derivedStateOf { lazyListState.layoutInfo } }.value.totalItemsCount
+        when (val viewState = viewModel.viewState.value) {
+            is BestPodcastsViewState.Loading -> {
+                ShowText(sampleText = "Loading")
+            }
 
-                    if (lastVisibleItemIndex == index && index == totalItems - 1) {
-                        viewModel.loadNextBatch()
-                    }
+            is BestPodcastsViewState.Error -> {
+                ShowText(sampleText = viewState.errorMessage)
+            }
+
+            is BestPodcastsViewState.Success -> {
+                BestPodcastsListView(viewState.podcasts, viewModel)
+            }
+        }
+    }
+}
+
+@Composable
+fun BestPodcastsListView(podcasts: List<Podcast>, viewModel: GetBestPodcastsViewModel){
+    val lazyListState = rememberLazyListState()
+    LazyColumn(state = lazyListState) {
+        itemsIndexed(podcasts){ index, _ ->
+            BestPodcastItemView(podcast = podcasts[index], viewModel)
+
+            if (index == podcasts.size - 1) {
+                val lastVisibleItemIndex = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                val totalItems = remember { derivedStateOf { lazyListState.layoutInfo } }.value.totalItemsCount
+
+                if (lastVisibleItemIndex == index && index == totalItems - 1) {
+                    viewModel.loadNextBatch()
                 }
             }
         }

@@ -23,7 +23,7 @@ class GetBestPodcastsViewModel @Inject constructor(
     private val _navigationEvent = mutableStateOf<NavigationEvent?>(null)
     val navigationEvent: State<NavigationEvent?> get() = _navigationEvent
 
-    val isLastBatch: Boolean = false
+    private val isLastBatch: Boolean = false
     init {
         initPodcasts()
     }
@@ -50,9 +50,6 @@ class GetBestPodcastsViewModel @Inject constructor(
                 _viewState.value = BestPodcastsViewState.Success(
                     podcasts = getBestPodcastsRepository.getAllPodcasts() // load all available podcasts
                 )
-                if(viewState.value is BestPodcastsViewState.Success){
-                    println("PODCASTS: " + (viewState.value as BestPodcastsViewState.Success).podcasts.size)
-                }
             }
         }
     }

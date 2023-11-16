@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +21,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.audiobooks.codingchallenge.R
-import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 import com.audiobooks.codingchallenge.viewmodel.PodcastViewModel
 
 @Composable
@@ -27,7 +28,9 @@ fun PodcastView(
     viewModel: PodcastViewModel
 ){
     Column(
-        modifier = Modifier.padding(10.dp)
+        modifier = Modifier
+            .padding(10.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Row(
             modifier = Modifier
