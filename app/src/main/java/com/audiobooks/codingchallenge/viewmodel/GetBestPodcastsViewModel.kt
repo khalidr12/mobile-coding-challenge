@@ -30,7 +30,7 @@ class GetBestPodcastsViewModel @Inject constructor(
     private fun initPodcasts(){
         viewModelScope.launch{
             getBestPodcastsRepository.initializeData() // Gets all data from api and stores to db
-            loadNextBatch()
+            loadNextBatch() // load the first batch of podcasts
         }
     }
     fun loadPodcasts(){
