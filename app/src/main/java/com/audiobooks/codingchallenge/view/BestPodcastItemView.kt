@@ -15,12 +15,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.audiobooks.codingchallenge.database.Podcast
-import com.audiobooks.codingchallenge.ui.theme.FavouriteRed
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
 @Composable
@@ -39,33 +41,29 @@ fun BestPodcastItemView(
         val painter: Painter = rememberImagePainter(podcast.image)
         Image(
             painter = painter,
-            contentDescription = null, // Add content description if needed
+            contentDescription = null,
             modifier = Modifier
-                .size(100.dp, 100.dp) // Adjust size as needed
-                .clip(RoundedCornerShape(10.dp))
+                .size(65.dp, 65.dp)
+                .clip(RoundedCornerShape(5.dp))
         )
         Spacer(modifier = Modifier.width(5.dp))
         Column {
             Text(
                 text = podcast.title,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
             Text(
                 text = podcast.publisher,
                 fontStyle = FontStyle.Italic,
-                fontSize = 15.sp
+                fontSize = 13.sp,
+                color = Color.Gray
             )
 
             FavouriteText(podcast.isFavourite)
         }
     }
-}
-
-@Composable
-fun FavouriteText(isFavourite: Boolean){
-    val text = if (isFavourite) "Favourited" else ""
-    Text(
-        text = text,
-        color = FavouriteRed
-    )
 }

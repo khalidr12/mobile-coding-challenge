@@ -4,9 +4,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.audiobooks.codingchallenge.api.repository.GetBestPodcastsRepository
 import com.audiobooks.codingchallenge.model.BestPodcastsViewState
 import com.audiobooks.codingchallenge.navigation.NavigationEvent
+import com.audiobooks.codingchallenge.usecase.Result
+import com.audiobooks.codingchallenge.usecase.getBestPodcastsUseCase.GetBestPodcastsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GetBestPodcastsViewModel @Inject constructor(
-    private var getBestPodcastsRepository: GetBestPodcastsRepository,
+    private var getBestPodcastsUseCase: GetBestPodcastsUseCase
 ): ViewModel() {
 
     private val _viewState = mutableStateOf<BestPodcastsViewState>(BestPodcastsViewState.Loading)
@@ -28,25 +29,61 @@ class GetBestPodcastsViewModel @Inject constructor(
     }
 
     private fun initPodcasts(){
-        viewModelScope.launch{
-            getBestPodcastsRepository.initializeData() // Gets all data from api and stores to db
-            loadNextBatch() // load the first batch of podcasts
+        viewModelScope.launch {
+            getBestPodcastsUseCase.initialize().collect {
+                when(it){
+                    is Result.Loading -> {
+                        _viewState.value = BestPodcastsViewState.Loading
+                    }
+
+                    is Result.Error -> {
+                        _viewState.value = BestPodcastsViewState.Error(it.exception)
+                    }
+
+                    is Result.Success -> {
+                        _viewState.value = BestPodcastsViewState.Success(it.data)
+                    }
+                }
+            }
         }
     }
     fun loadPodcasts(){
         viewModelScope.launch {
-            _viewState.value = BestPodcastsViewState.Success(
-                podcasts = getBestPodcastsRepository.getAllPodcasts()
-            )
+            getBestPodcastsUseCase.loadData().collect {
+                when(it){
+                    is Result.Loading -> {
+                        _viewState.value = BestPodcastsViewState.Loading
+                    }
+
+                    is Result.Error -> {
+                        _viewState.value = BestPodcastsViewState.Error(it.exception)
+                    }
+
+                    is Result.Success -> {
+                        _viewState.value = BestPodcastsViewState.Success(it.data)
+                    }
+                }
+            }
         }
     }
 
     fun loadNextBatch() {
         viewModelScope.launch {
-            getBestPodcastsRepository.loadBatch() // gets the next batch of podcasts
-            _viewState.value = BestPodcastsViewState.Success(
-                podcasts = getBestPodcastsRepository.getAllPodcasts() // load all available podcasts
-            )
+           getBestPodcastsUseCase.loadBatch().collect {
+               when(it){
+                   is Result.Error -> {
+                       _viewState.value = BestPodcastsViewState.Error(it.exception)
+                   }
+
+                   is Result.Success -> {
+                       _viewState.value = BestPodcastsViewState.Success(it.data)
+                   }
+
+                   is Result.Loading -> {
+                       _viewState.value = BestPodcastsViewState.Loading
+                   }
+               }
+           }
         }
     }
     fun podcastSelected(podcastId: String){

@@ -17,13 +17,13 @@ class GetBestPodcastsRepository @Inject constructor(
     private var page = 1
     private var hasNext = true
 
-    suspend fun initializeData() {
+    override suspend fun initializeData() {
         // Get initial existing podcasts from the data base
-        val podcastsFromDB = getAllPodcasts()
+        val podcastsFromDB = getAllPodcastsUntilOffset()
 
         // If the db is empty, then we need to get a new batch from the api
         if (podcastsFromDB.isEmpty()) {
-            val podcastsFromApi = getBestPodcasts()
+            val podcastsFromApi = getBestPodcastsFromApi()
             podcastsDAO.insertPodcasts(podcastsFromApi)
         } else {
             // otherwise we need to refresh the data and add the newly added podcasts to
@@ -32,8 +32,12 @@ class GetBestPodcastsRepository @Inject constructor(
         }
     }
 
+    override suspend fun isNotLastPage(): Boolean {
+        return hasNext
+    }
+
     private suspend fun refreshData(podcastsFromDB : List<Podcast>) {
-        val latestPodcastsFromApi = getBestPodcasts()
+        val latestPodcastsFromApi = getBestPodcastsFromApi()
 
         // loop through every new podcast, and insert/update all podcasts that have not
         // been favourited since that means they can be a new copy
@@ -51,17 +55,17 @@ class GetBestPodcastsRepository @Inject constructor(
     }
 
     private suspend fun addNextPage(){
-        val podcasts = getBestPodcasts()
+        val podcasts = getBestPodcastsFromApi()
         for (podcast in podcasts) {
             podcastsDAO.insert(podcast)
         }
     }
 
     // Get the next amount of podcasts, up to the offset
-    suspend fun getAllPodcasts() : List<Podcast> {
+    override suspend fun getAllPodcastsUntilOffset() : List<Podcast> {
         return podcastsDAO.getAllPodcasts(offset)
     }
-    suspend fun loadBatch(): List<Podcast> {
+    override suspend fun loadBatchFromRoom(): List<Podcast> {
         // the api returns 20 podcasts at a time, so we know we are at the end of the page when
         // we have an offset that is perfectly divisible by 20 (such as 20, 40, 60)
         // this means we need to add the next page to the db
@@ -86,7 +90,7 @@ class GetBestPodcastsRepository @Inject constructor(
         return podcast
     }
 
-    override suspend fun getBestPodcasts(): List<Podcast> {
+    override suspend fun getBestPodcastsFromApi(): List<Podcast> {
         // to limit the amount of requests sent to the backend, we need to check if the response
         // has a next page to limit infinite requests in pagination
         if(hasNext) {

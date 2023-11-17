@@ -41,71 +41,9 @@ fun PodcastView(
     Scaffold (
         topBar = { TopAppBar(viewModel = viewModel) },
         content = {
-            Column(
-                modifier = Modifier
-                    .padding(it)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                viewModel.podcast.value?.let { podcast ->
-                    Text(
-                        text = podcast.title,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(text = podcast.publisher)
-                    val painter: Painter = rememberImagePainter(podcast.image)
-                    Image(
-                        painter = painter,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(200.dp, 200.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                    )
-                    FavouritePodcastButton(viewModel, podcast)
-                    Text(text = formatHtmlText(podcast.description))
-                }
+            viewModel.podcast.value?.let { podcast ->
+                PodcastDetails(viewModel = viewModel, podcast = podcast)
             }
         }
     )
-}
-
-@Composable
-fun FavouritePodcastButton(viewModel: PodcastViewModel, podcast: Podcast){
-    val isFavourite = viewModel.toggleFavorite.value
-    val backgroundColor = FavouriteRed
-
-    val customColors = ButtonDefaults.buttonColors(
-        containerColor = backgroundColor
-    )
-
-    Button(
-        onClick = { viewModel.toggleFavorite(podcastId = podcast.id) },
-        colors = customColors
-    ){
-        Text(
-            text = if(isFavourite) "Unfavourite" else " Favourite",
-        )
-    }
-}
-
-@Composable
-fun TopAppBar(viewModel: PodcastViewModel){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_arrow_back),
-            contentDescription = null,
-            modifier = Modifier
-                .size(15.dp, 15.dp)
-                .clickable {
-                    viewModel.navigateBack()
-                },
-        )
-        Text(text = "Back", modifier = Modifier.padding(start = 8.dp))
-    }
 }

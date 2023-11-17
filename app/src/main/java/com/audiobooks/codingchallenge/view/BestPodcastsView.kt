@@ -2,18 +2,17 @@ package com.audiobooks.codingchallenge.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.audiobooks.codingchallenge.database.Podcast
 import com.audiobooks.codingchallenge.model.BestPodcastsViewState
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
@@ -22,54 +21,33 @@ fun BestPodcastsView(
     viewModel: GetBestPodcastsViewModel,
 ) {
     Column (
-        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+        modifier = Modifier.padding(15.dp)
     ) {
+        val lazyListState = rememberLazyListState()
         Text(
             text = "Podcasts",
             fontWeight = Bold,
-            fontSize = 22.sp
+            fontSize = 20.sp
         )
 
         when (val viewState = viewModel.viewState.value) {
             is BestPodcastsViewState.Loading -> {
-                ShowText(sampleText = "Loading")
+                LoadingView()
             }
 
             is BestPodcastsViewState.Error -> {
-                ShowText(sampleText = viewState.errorMessage)
+                var isErrorDialogVisible by remember { mutableStateOf(true) }
+                ErrorAlertDialog(
+                    exception = viewState.exception,
+                    isErrorDialogVisible = isErrorDialogVisible,
+                    onDismiss = {
+                        isErrorDialogVisible = false
+                })
             }
 
             is BestPodcastsViewState.Success -> {
-                BestPodcastsListView(viewState.podcasts, viewModel)
+                BestPodcastsListView(viewState.podcasts, viewModel, lazyListState)
             }
         }
     }
-}
-
-@Composable
-fun BestPodcastsListView(podcasts: List<Podcast>, viewModel: GetBestPodcastsViewModel){
-    val lazyListState = rememberLazyListState()
-    LazyColumn(state = lazyListState) {
-        itemsIndexed(podcasts){ index, _ ->
-            BestPodcastItemView(podcast = podcasts[index], viewModel)
-
-            if (index == podcasts.size - 1) {
-                val lastVisibleItemIndex = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                val totalItems = remember { derivedStateOf { lazyListState.layoutInfo } }.value.totalItemsCount
-
-                if (lastVisibleItemIndex == index && index == totalItems - 1) {
-                    viewModel.loadNextBatch()
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-fun ShowText(sampleText : String){
-    Text(
-        text = "Hello $sampleText!",
-        modifier = Modifier
-    )
 }
