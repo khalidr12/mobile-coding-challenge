@@ -41,8 +41,7 @@ fun ErrorAlertDialog(
                 }
             },
             text = {
-                Text(text = "Error: ${exception.message}")
-                Text(text = stringResource(id = R.string.error_dialog_message))
+                Text(text = "Error: ${exception.message} \n" + stringResource(id = R.string.error_dialog_message))
             },
             confirmButton = {
                 Button(

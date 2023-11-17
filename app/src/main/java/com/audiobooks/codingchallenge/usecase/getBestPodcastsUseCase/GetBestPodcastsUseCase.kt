@@ -3,8 +3,8 @@ package com.audiobooks.codingchallenge.usecase.getBestPodcastsUseCase
 import com.audiobooks.codingchallenge.api.repository.IGetBestPodcastsRepository
 import com.audiobooks.codingchallenge.usecase.Result
 import kotlinx.coroutines.flow.flow
-import java.lang.Exception
 import javax.inject.Inject
+import kotlin.Exception
 
 
 class GetBestPodcastsUseCase @Inject constructor(
