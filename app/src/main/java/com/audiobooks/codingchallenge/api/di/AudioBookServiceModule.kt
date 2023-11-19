@@ -1,8 +1,10 @@
 package com.audiobooks.codingchallenge.api.di
 
 import com.audiobooks.codingchallenge.api.response.PodcastDeserializer
+import com.audiobooks.codingchallenge.api.response.PodcastsDeserializer
 import com.audiobooks.codingchallenge.api.service.AudioBookService
-import com.audiobooks.codingchallenge.database.Podcast
+import com.audiobooks.codingchallenge.database.PodcastEntity
+import com.audiobooks.codingchallenge.database.PodcastsEntity
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -19,7 +21,8 @@ object AudioBookServiceModule {
     @Provides
     fun providesAudioBookService(): AudioBookService {
         val gson = GsonBuilder()
-            .registerTypeAdapter(Podcast::class.java, PodcastDeserializer())
+            .registerTypeAdapter(PodcastEntity::class.java, PodcastDeserializer())
+            .registerTypeAdapter(PodcastsEntity::class.java, PodcastsDeserializer())
             .create()
 
         return Retrofit.Builder()

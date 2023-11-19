@@ -1,10 +1,13 @@
 package com.audiobooks.codingchallenge.api.repository
 
-import com.audiobooks.codingchallenge.database.Podcast
+import androidx.paging.PagingData
+import com.audiobooks.codingchallenge.database.PodcastEntity
+import kotlinx.coroutines.flow.Flow
+
 interface IGetBestPodcastsRepository {
-    suspend fun getBestPodcastsFromApi() : List<Podcast>
-    suspend fun loadBatchFromRoom() : List<Podcast>
-    suspend fun getAllPodcastsUntilOffset() : List<Podcast>
-    suspend fun initializeData()
-    suspend fun isNotLastPage() : Boolean
+
+    fun getPodcasts(): Flow<PagingData<PodcastEntity>>
+    suspend fun getPodcastById(podcastId: String): PodcastEntity?
+    suspend fun updatePodcast(podcastId: String): PodcastEntity?
+
 }

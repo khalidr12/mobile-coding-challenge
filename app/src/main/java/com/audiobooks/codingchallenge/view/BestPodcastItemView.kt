@@ -22,12 +22,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import com.audiobooks.codingchallenge.database.Podcast
+import com.audiobooks.codingchallenge.database.PodcastEntity
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
 @Composable
 fun BestPodcastItemView(
-    podcast: Podcast,
+    podcast: PodcastEntity,
     viewModel: GetBestPodcastsViewModel
 ){
     Row(

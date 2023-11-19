@@ -1,9 +1,10 @@
 package com.audiobooks.codingchallenge.api.di
 
+import androidx.paging.Pager
 import com.audiobooks.codingchallenge.api.repository.GetBestPodcastsRepository
 import com.audiobooks.codingchallenge.api.repository.IGetBestPodcastsRepository
-import com.audiobooks.codingchallenge.api.service.AudioBookService
 import com.audiobooks.codingchallenge.database.BestPodcastsDAO
+import com.audiobooks.codingchallenge.database.PodcastEntity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,9 +18,9 @@ class GetBestPodcastsRepositoryModule {
     @Provides
     @Singleton
     fun providesGetBestPodcastsRepositoryModule(
-        service: AudioBookService,
-        podcastsDAO: BestPodcastsDAO
+        podcastsDAO: BestPodcastsDAO,
+        pager: Pager<Int, PodcastEntity>
     ): IGetBestPodcastsRepository {
-        return GetBestPodcastsRepository(service, podcastsDAO)
+        return GetBestPodcastsRepository(podcastsDAO, pager)
     }
 }

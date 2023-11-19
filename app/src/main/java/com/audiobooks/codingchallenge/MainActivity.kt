@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.audiobooks.codingchallenge.navigation.NavigationEvent
 import com.audiobooks.codingchallenge.ui.theme.MyApplicationTheme
 import com.audiobooks.codingchallenge.view.BestPodcastsView
@@ -46,7 +47,8 @@ class MainActivity : ComponentActivity() {
 
         NavHost(navController = navController, startDestination = "bestPodcasts") {
             composable("bestPodcasts") {
-                BestPodcastsView(getBestPodcastViewModel)
+                val podcasts = getBestPodcastViewModel.podcastsFlow.collectAsLazyPagingItems()
+                BestPodcastsView(podcasts, getBestPodcastViewModel)
             }
             composable("podcastDetails/{podcastId}") {
                 it.arguments?.getString("podcastId")
@@ -73,7 +75,6 @@ class MainActivity : ComponentActivity() {
 
         when (podcastViewModel.navigationEvent.value) {
             is NavigationEvent.NavigateBack -> {
-                getBestPodcastViewModel.loadPodcasts()
                 navController.popBackStack()
             }
 

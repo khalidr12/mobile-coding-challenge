@@ -1,23 +1,27 @@
 package com.audiobooks.codingchallenge.view
 
+import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.audiobooks.codingchallenge.model.BestPodcastsViewState
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import com.audiobooks.codingchallenge.database.PodcastEntity
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
 @Composable
 fun BestPodcastsView(
+    podcasts: LazyPagingItems<PodcastEntity>,
     viewModel: GetBestPodcastsViewModel,
 ) {
     Column (
@@ -30,23 +34,22 @@ fun BestPodcastsView(
             fontSize = 20.sp
         )
 
-        when (val viewState = viewModel.viewState.value) {
-            is BestPodcastsViewState.Loading -> {
+        val context = LocalContext.current
+        LaunchedEffect(key1 = podcasts.loadState){
+            if(podcasts.loadState.refresh is LoadState.Error){
+                Toast.makeText(
+                    context,
+                    "error: ${(podcasts.loadState.refresh as LoadState.Error).error.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+        Box(modifier = Modifier.fillMaxSize()){
+            if(podcasts.loadState.refresh is LoadState.Loading){
                 LoadingView()
-            }
-
-            is BestPodcastsViewState.Error -> {
-                var isErrorDialogVisible by remember { mutableStateOf(true) }
-                ErrorAlertDialog(
-                    exception = viewState.exception,
-                    isErrorDialogVisible = isErrorDialogVisible,
-                    onDismiss = {
-                        isErrorDialogVisible = false
-                })
-            }
-
-            is BestPodcastsViewState.Success -> {
-                BestPodcastsListView(viewState.podcasts, viewModel, lazyListState)
+            } else {
+                BestPodcastsListView(podcasts = podcasts, viewModel = viewModel, lazyListState = lazyListState )
             }
         }
     }

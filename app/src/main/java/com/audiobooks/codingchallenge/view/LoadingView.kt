@@ -20,7 +20,13 @@ import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun LoadingView(){
-    LoadingCellView()
+    Column {
+        LoadingCellView()
+        Spacer(modifier = Modifier.width(10.dp))
+        LoadingCellView()
+        Spacer(modifier = Modifier.width(10.dp))
+        LoadingCellView()
+    }
 }
 
 @Composable

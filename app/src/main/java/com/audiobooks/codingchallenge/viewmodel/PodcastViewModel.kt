@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.audiobooks.codingchallenge.api.repository.GetBestPodcastsRepository
-import com.audiobooks.codingchallenge.database.Podcast
+import com.audiobooks.codingchallenge.database.PodcastEntity
 import com.audiobooks.codingchallenge.navigation.NavigationEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,8 +20,8 @@ class PodcastViewModel @Inject constructor(
     private val _navigationEvent = mutableStateOf<NavigationEvent?>(null)
     val navigationEvent: State<NavigationEvent?> get() = _navigationEvent
 
-    private val _podcast = mutableStateOf<Podcast?>(null)
-    val podcast: State<Podcast?> get() = _podcast
+    private val _podcast = mutableStateOf<PodcastEntity?>(null)
+    val podcast: State<PodcastEntity?> get() = _podcast
 
     private val _toggleFavorite = mutableStateOf(false)
     val toggleFavorite: State<Boolean> get() = _toggleFavorite

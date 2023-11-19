@@ -7,27 +7,21 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import java.lang.reflect.Type
 
-class PodcastDeserializer : JsonDeserializer<PodcastEntity> {
+class PodcastsDeserializer: JsonDeserializer<PodcastsEntity> {
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
         context: JsonDeserializationContext?
-    ): PodcastEntity {
+    ): PodcastsEntity {
         val jsonObject = json?.asJsonObject
         val id = jsonObject?.get("id")?.asString
-        val image = jsonObject?.get("image")?.asString
-        val title = jsonObject?.get("title")?.asString
-        val publisher = jsonObject?.get("publisher")?.asString
-        val thumbnail = jsonObject?.get("thumbnail")?.asString
-        val description = jsonObject?.get("description")?.asString
+        val hasNextPage =  jsonObject?.get("has_next")?.asBoolean
+        val nextPageNumber = jsonObject?.get("next_page_number")?.asInt
 
-        return PodcastEntity(
+        return PodcastsEntity(
             id ?: "",
-            image ?: "",
-            title ?: "",
-            publisher ?: "",
-            thumbnail ?: "",
-            description ?: ""
+            hasNextPage ?: false,
+            nextPageNumber ?: 0
         )
     }
 }

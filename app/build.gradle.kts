@@ -52,7 +52,10 @@ android {
 }
 
 dependencies {
+    implementation("androidx.paging:paging-common-android:3.3.0-alpha02")
+    implementation("androidx.paging:paging-compose-android:3.3.0-alpha02")
     val roomVersion = "2.6.0"
+    implementation("androidx.room:room-paging:$roomVersion")
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:${roomVersion}")
