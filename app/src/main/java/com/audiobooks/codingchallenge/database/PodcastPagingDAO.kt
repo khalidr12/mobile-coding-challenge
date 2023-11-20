@@ -10,7 +10,7 @@ interface PodcastPagingDAO {
     @Query("SELECT * FROM podcastPaging where id = :id")
     suspend fun getEntity(id: String): PodcastsEntity?
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPodcast(entity: PodcastsEntity)
 
     @Query("DELETE FROM podcastPaging")

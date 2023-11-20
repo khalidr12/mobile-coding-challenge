@@ -22,13 +22,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import com.audiobooks.codingchallenge.api.response.Podcast
 import com.audiobooks.codingchallenge.database.PodcastEntity
 import com.audiobooks.codingchallenge.utils.formatHtmlText
 import com.audiobooks.codingchallenge.viewmodel.PodcastViewModel
 
 @Composable
 fun PodcastDetails(
-    podcast: PodcastEntity,
+    podcast: Podcast,
     viewModel: PodcastViewModel
 ){
     Column(

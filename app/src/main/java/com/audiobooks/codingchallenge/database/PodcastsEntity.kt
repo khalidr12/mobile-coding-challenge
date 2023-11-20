@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class PodcastsEntity (
     @PrimaryKey val id: String,
     val hasNextPage: Boolean,
-    val nextPageNumber: Int
+    val nextPageNumber: Int?
 )

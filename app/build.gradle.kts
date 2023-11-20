@@ -54,6 +54,8 @@ android {
 dependencies {
     implementation("androidx.paging:paging-common-android:3.3.0-alpha02")
     implementation("androidx.paging:paging-compose-android:3.3.0-alpha02")
+    implementation ("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
     val roomVersion = "2.6.0"
     implementation("androidx.room:room-paging:$roomVersion")
     implementation("androidx.room:room-runtime:$roomVersion")

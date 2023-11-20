@@ -4,12 +4,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.audiobooks.codingchallenge.database.PodcastEntity
+import com.audiobooks.codingchallenge.api.response.Podcast
 import com.audiobooks.codingchallenge.ui.theme.FavouriteRed
 import com.audiobooks.codingchallenge.viewmodel.PodcastViewModel
 
 @Composable
-fun FavouritePodcastButton(viewModel: PodcastViewModel, podcast: PodcastEntity){
+fun FavouritePodcastButton(viewModel: PodcastViewModel, podcast: Podcast){
     val isFavourite = viewModel.toggleFavorite.value
     val backgroundColor = FavouriteRed
 

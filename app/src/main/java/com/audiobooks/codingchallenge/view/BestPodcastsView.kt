@@ -14,16 +14,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import com.audiobooks.codingchallenge.database.PodcastEntity
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
 @Composable
 fun BestPodcastsView(
-    podcasts: LazyPagingItems<PodcastEntity>,
-    viewModel: GetBestPodcastsViewModel,
+    viewModel: GetBestPodcastsViewModel = hiltViewModel(),
 ) {
+    val podcasts = viewModel.podcastsFlow.collectAsLazyPagingItems()
     Column (
         modifier = Modifier.padding(15.dp)
     ) {
@@ -46,7 +46,7 @@ fun BestPodcastsView(
         }
 
         Box(modifier = Modifier.fillMaxSize()){
-            if(podcasts.loadState.refresh is LoadState.Loading){
+            if(podcasts.itemCount == 0){
                 LoadingView()
             } else {
                 BestPodcastsListView(podcasts = podcasts, viewModel = viewModel, lazyListState = lazyListState )

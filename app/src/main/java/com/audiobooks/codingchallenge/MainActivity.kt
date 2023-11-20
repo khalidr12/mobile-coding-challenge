@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.audiobooks.codingchallenge.navigation.NavigationEvent
 import com.audiobooks.codingchallenge.ui.theme.MyApplicationTheme
 import com.audiobooks.codingchallenge.view.BestPodcastsView
@@ -47,8 +46,7 @@ class MainActivity : ComponentActivity() {
 
         NavHost(navController = navController, startDestination = "bestPodcasts") {
             composable("bestPodcasts") {
-                val podcasts = getBestPodcastViewModel.podcastsFlow.collectAsLazyPagingItems()
-                BestPodcastsView(podcasts, getBestPodcastViewModel)
+                BestPodcastsView(getBestPodcastViewModel)
             }
             composable("podcastDetails/{podcastId}") {
                 it.arguments?.getString("podcastId")
@@ -57,14 +55,11 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val navigationEvent = getBestPodcastViewModel.navigationEvent.value
-        if (navigationEvent != null) {
-            when (navigationEvent) {
+        val getBestPodcastsNavigationEvent = getBestPodcastViewModel.navigationEvent.value
+        if (getBestPodcastsNavigationEvent != null) {
+            when (getBestPodcastsNavigationEvent) {
                 is NavigationEvent.NavigateToPodcastView -> {
-                    navController.navigate("podcastDetails/${navigationEvent.podcastId}")
-                }
-                is NavigationEvent.NavigateToPodcastList -> {
-                    navController.navigate("bestPodcasts")
+                    navController.navigate("podcastDetails/${getBestPodcastsNavigationEvent.podcastId}")
                 }
                 is NavigationEvent.NavigateBack -> {
                     navController.popBackStack()
@@ -73,15 +68,17 @@ class MainActivity : ComponentActivity() {
             getBestPodcastViewModel.clearNavigationEvent()
         }
 
-        when (podcastViewModel.navigationEvent.value) {
-            is NavigationEvent.NavigateBack -> {
-                navController.popBackStack()
+        val podcastNavigationEvent = podcastViewModel.navigationEvent.value
+        if(podcastNavigationEvent != null){
+            when (podcastViewModel.navigationEvent.value) {
+                is NavigationEvent.NavigateBack -> {
+                    navController.popBackStack()
+                }
+                else -> {
+                    Log.ERROR
+                }
             }
-
-            else -> {
-                Log.ERROR
-            }
+            podcastViewModel.clearNavigationEvent()
         }
-        podcastViewModel.clearNavigationEvent()
     }
 }

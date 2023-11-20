@@ -21,22 +21,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
-import com.audiobooks.codingchallenge.database.PodcastEntity
+import com.audiobooks.codingchallenge.api.response.Podcast
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
 @Composable
 fun BestPodcastItemView(
-    podcast: PodcastEntity,
-    viewModel: GetBestPodcastsViewModel
+    podcast: Podcast,
+    viewModel: GetBestPodcastsViewModel = hiltViewModel()
 ){
     Row(
         modifier = Modifier
             .padding(vertical = 10.dp)
             .fillMaxWidth()
             .clickable {
-            viewModel.podcastSelected(podcastId = podcast.id)
-        }
+                viewModel.podcastSelected(podcast = podcast)
+            }
     ) {
         val painter: Painter = rememberImagePainter(podcast.image)
         Image(

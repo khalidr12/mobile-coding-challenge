@@ -1,11 +1,13 @@
 package com.audiobooks.codingchallenge.viewmodel
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.cachedIn
+import com.audiobooks.codingchallenge.api.response.Podcast
 import com.audiobooks.codingchallenge.database.PodcastsEntity
 import com.audiobooks.codingchallenge.model.BestPodcastsViewState
 import com.audiobooks.codingchallenge.navigation.NavigationEvent
@@ -19,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GetBestPodcastsViewModel @Inject constructor(
-    getBestPodcastsUseCase: GetBestPodcastsUseCase
+    private var getBestPodcastsUseCase: GetBestPodcastsUseCase
 ): ViewModel() {
 
     private val _navigationEvent = mutableStateOf<NavigationEvent?>(null)
@@ -27,8 +29,8 @@ class GetBestPodcastsViewModel @Inject constructor(
 
     var podcastsFlow = getBestPodcastsUseCase.getPodcasts().cachedIn(viewModelScope)
 
-    fun podcastSelected(podcastId: String){
-        _navigationEvent.value = NavigationEvent.NavigateToPodcastView(podcastId = podcastId)
+    fun podcastSelected(podcast: Podcast){
+        _navigationEvent.value = NavigationEvent.NavigateToPodcastView(podcastId = podcast.id)
     }
 
     fun clearNavigationEvent() {

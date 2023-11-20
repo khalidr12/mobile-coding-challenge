@@ -6,16 +6,17 @@ import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.audiobooks.codingchallenge.database.PodcastEntity
+import com.audiobooks.codingchallenge.api.response.Podcast
 import com.audiobooks.codingchallenge.viewmodel.GetBestPodcastsViewModel
 
 @Composable
 fun BestPodcastsListView(
-    podcasts: LazyPagingItems<PodcastEntity>,
-    viewModel: GetBestPodcastsViewModel,
-    lazyListState: LazyListState
+    podcasts: LazyPagingItems<Podcast>,
+    viewModel: GetBestPodcastsViewModel = hiltViewModel(),
+    lazyListState: LazyListState,
 ) {
     LazyColumn(state = lazyListState) {
         items(podcasts.itemCount) {

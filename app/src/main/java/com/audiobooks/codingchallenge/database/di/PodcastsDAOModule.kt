@@ -11,7 +11,6 @@ import com.audiobooks.codingchallenge.database.AppDatabase
 import com.audiobooks.codingchallenge.database.BestPodcastsDAO
 import com.audiobooks.codingchallenge.database.PodcastEntity
 import com.audiobooks.codingchallenge.database.PodcastPagingDAO
-import com.audiobooks.codingchallenge.database.PodcastsEntity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
